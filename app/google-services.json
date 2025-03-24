@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "899334287035",
+    "project_id": "sparewallet-55512",
+    "storage_bucket": "sparewallet-55512.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899334287035:android:0300976b191668f958439e",
+        "android_client_info": {
+          "package_name": "com.example.sparewallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtNVdkWVWZK6OxE0GHr7Ym_wmOVSjNLeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
