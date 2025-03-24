@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/pinEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter 6-digit PIN"
+        android:inputType="numberPassword"
+        android:maxLength="6" />
+
+    <EditText
+        android:id="@+id/confirmPinEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm PIN"
+        android:inputType="numberPassword"
+        android:maxLength="6"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/setupPinButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set PIN"
+        android:layout_marginTop="24dp" />
+</LinearLayout>
