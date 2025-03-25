@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 
 class ScanViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+    private val _scanResult = MutableLiveData<String>()
+    val scanResult: LiveData<String> = _scanResult
+
+    fun setScanResult(result: String) {
+        _scanResult.value = result
     }
-    val text: LiveData<String> = _text
 }

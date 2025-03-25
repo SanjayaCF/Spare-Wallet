@@ -59,4 +59,7 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(libs.material.v180)
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.github.yuriy-budiyev:code-scanner:2.3.0")
+    implementation ("com.google.mlkit:barcode-scanning:17.0.3")
+
 }
