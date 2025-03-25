@@ -3,4 +3,13 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="m_transfer">m-Transfer</string>
+    <string name="m_payment">m-Payment</string>
+    <string name="m_commerce">m-Commerce</string>
+    <string name="flazz">Flazz</string>
+    <string name="summary_balance">Saldo Saat Ini</string>
+    <string name="desc_chart">Grafik Keuangan</string>
+    <string name="desc_add_transaction">Tambah Transaksi</string>
+    <string name="scan_qr_code_desc">Scan QR Code</string>
+
 </resources>
