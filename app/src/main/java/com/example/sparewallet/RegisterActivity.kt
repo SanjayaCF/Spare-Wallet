@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sparewallet.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -23,24 +24,41 @@ class RegisterActivity : AppCompatActivity() {
             binding.registerButton.isEnabled = false
             val email = binding.registerEmailEditText.text.toString().trim()
             val password = binding.registerPasswordEditText.text.toString().trim()
+            val name = binding.registerNameEditText.text.toString().trim()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty()) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            startActivity(Intent(this, SetupPinActivity::class.java))
-                            finish()
+                            val uid = auth.currentUser?.uid ?: ""
+                            val database = FirebaseDatabase.getInstance("https://sparewallet-55512-default-rtdb.asia-southeast1.firebasedatabase.app")
+                            val userRef = database.getReference("users").child(uid)
+
+                            val accountNumber = generateAccountNumber()
+
+                            val userData = mapOf(
+                                "name" to name,
+                                "balance" to "0",
+                                "accountNumber" to accountNumber
+                            )
+
+                            userRef.setValue(userData)
+                                .addOnCompleteListener { dataTask ->
+                                    if (dataTask.isSuccessful) {
+                                        startActivity(Intent(this, SetupPinActivity::class.java))
+                                        finish()
+                                    } else {
+                                        Toast.makeText(this, "Failed to save user data: ${dataTask.exception?.message}", Toast.LENGTH_LONG).show()
+                                        binding.registerButton.isEnabled = true
+                                    }
+                                }
                         } else {
-                            Toast.makeText(
-                                this,
-                                "Registration failed: ${task.exception?.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                             binding.registerButton.isEnabled = true
                         }
                     }
             } else {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 binding.registerButton.isEnabled = true
             }
         }
@@ -50,5 +68,12 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    private fun generateAccountNumber(): String {
+        val min = 1000000000L
+        val max = 9999999999L
+        val randomNumber = (min..max).random()
+        return randomNumber.toString()
     }
 }

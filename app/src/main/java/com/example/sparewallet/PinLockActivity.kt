@@ -33,7 +33,6 @@ class PinLockActivity : AppCompatActivity() {
             return
         }
 
-        // Initialize biometric authentication components
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
@@ -57,7 +56,6 @@ class PinLockActivity : AppCompatActivity() {
             biometricPrompt.authenticate(promptInfo)
         }
 
-        // Add TextWatcher to automatically process PIN input when 6 digits are entered
         binding.pinEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s != null && s.length == 6) {
@@ -66,7 +64,6 @@ class PinLockActivity : AppCompatActivity() {
                         navigateToMain()
                     } else {
                         Toast.makeText(this@PinLockActivity, "Incorrect PIN", Toast.LENGTH_SHORT).show()
-                        // Clear the input so the user can try again
                         binding.pinEditText.text?.clear()
                     }
                 }
