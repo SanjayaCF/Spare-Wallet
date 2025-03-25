@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.auth
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.example.sparewallet.databinding.ActivityPinLockBinding
+import com.example.sparewallet.ui.main.MainActivity
 import java.util.concurrent.Executor
 
 class PinLockActivity : AppCompatActivity() {

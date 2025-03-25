@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.model
 
 data class TransferRecipient(
     var name: String = "",

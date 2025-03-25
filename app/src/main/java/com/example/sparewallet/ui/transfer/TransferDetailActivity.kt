@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.transfer
 
 import android.os.Bundle
 import android.text.Editable
@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sparewallet.databinding.ActivityTransferDetailBinding
+import com.example.sparewallet.model.TransactionRecord
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.NumberFormat

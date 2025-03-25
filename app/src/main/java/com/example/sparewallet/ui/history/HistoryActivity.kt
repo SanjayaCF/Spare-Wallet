@@ -1,10 +1,11 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.history
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sparewallet.databinding.ActivityHistoryBinding
+import com.example.sparewallet.model.TransactionRecord
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 

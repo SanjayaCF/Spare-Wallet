@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.main.home.HomeFragment">
 
     <!-- Unified Profile & Wallet Card -->
     <androidx.cardview.widget.CardView

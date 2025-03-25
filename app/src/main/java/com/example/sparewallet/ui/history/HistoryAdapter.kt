@@ -1,9 +1,10 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sparewallet.databinding.ItemTransactionBinding
+import com.example.sparewallet.model.TransactionRecord
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*

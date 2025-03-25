@@ -1,4 +1,4 @@
-package com.example.sparewallet.ui.home
+package com.example.sparewallet.ui.main.home
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,10 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.sparewallet.ComingSoonActivity
-import com.example.sparewallet.HistoryActivity
-import com.example.sparewallet.TopUpActivity
-import com.example.sparewallet.TransferActivity
+import com.example.sparewallet.common.ComingSoonActivity
+import com.example.sparewallet.ui.history.HistoryActivity
+import com.example.sparewallet.ui.transfer.TransferActivity
 import com.example.sparewallet.databinding.FragmentHomeBinding
 import java.text.NumberFormat
 import java.util.Locale

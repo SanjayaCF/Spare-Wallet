@@ -1,9 +1,10 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.transfer
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sparewallet.databinding.ItemTransferRecipientBinding
+import com.example.sparewallet.model.TransferRecipient
 
 class TransferRecipientAdapter(
     private val recipientList: List<TransferRecipient>,

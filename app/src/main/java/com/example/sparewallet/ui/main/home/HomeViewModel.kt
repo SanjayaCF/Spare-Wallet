@@ -1,4 +1,4 @@
-package com.example.sparewallet.ui.home
+package com.example.sparewallet.ui.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

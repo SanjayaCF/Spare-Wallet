@@ -1,4 +1,4 @@
-package com.example.sparewallet.ui.dashboard
+package com.example.sparewallet.ui.main.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

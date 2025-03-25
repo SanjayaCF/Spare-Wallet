@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -16,7 +16,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".common.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -25,48 +25,48 @@
         </activity>
 
         <activity
-            android:name=".SetupPinActivity"
+            android:name=".ui.auth.SetupPinActivity"
             android:exported="true" />
 
         <activity
-            android:name=".PinLockActivity"
+            android:name=".ui.auth.PinLockActivity"
             android:exported="true" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.auth.LoginActivity"
             android:exported="true" />
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.auth.RegisterActivity"
             android:exported="true" />
 
         <activity
-            android:name=".TopUpActivity"
+            android:name=".ui.main.home.TopUpActivity"
             android:exported="true" />
 
         <activity
-            android:name=".TransferActivity"
+            android:name=".ui.transfer.TransferActivity"
             android:exported="true" />
 
         <activity
-            android:name=".TransferDetailActivity"
+            android:name=".ui.transfer.TransferDetailActivity"
             android:exported="true" />
 
         <activity
-            android:name=".ComingSoonActivity"
+            android:name=".common.ComingSoonActivity"
             android:exported="true" />
 
         <activity
-            android:name=".HistoryActivity"
+            android:name=".ui.history.HistoryActivity"
             android:exported="true" />
 
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".ui.main.profile.EditProfileActivity"
             android:exported="true" />
 
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name" />
 

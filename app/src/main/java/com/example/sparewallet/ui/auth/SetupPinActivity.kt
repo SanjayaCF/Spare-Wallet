@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.auth
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.sparewallet.databinding.ActivitySetupPinBinding
+import com.example.sparewallet.ui.main.MainActivity
 
 class SetupPinActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.example.sparewallet
+package com.example.sparewallet.ui.main.profile
 
 import android.os.Bundle
 import android.widget.Toast
