@@ -1,10 +1,10 @@
-package com.example.sparewallet.ui.main.dashboard
+package com.example.sparewallet.ui.main.scanQris
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class ScanViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

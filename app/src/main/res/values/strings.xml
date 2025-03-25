@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">spareWallet</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_scan">QRIS</string>
     <string name="title_notifications">Notifications</string>
     <string name="m_transfer">m-Transfer</string>
     <string name="m_payment">m-Payment</string>
