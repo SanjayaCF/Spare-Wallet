@@ -2,6 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -38,6 +39,31 @@
         <activity
             android:name=".RegisterActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".TopUpActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".TransferActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".TransferDetailActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ComingSoonActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="true" />
+
 
         <activity
             android:name=".MainActivity"
