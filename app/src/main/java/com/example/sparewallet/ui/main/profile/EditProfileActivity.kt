@@ -21,6 +21,7 @@ class EditProfileActivity : AppCompatActivity() {
             .getReference("users")
             .child(uid)
 
+        // Load existing data
         userRef.child("name").get()
             .addOnSuccessListener { snapshot ->
                 val name = snapshot.getValue(String::class.java) ?: ""
@@ -30,15 +31,43 @@ class EditProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to load name", Toast.LENGTH_SHORT).show()
             }
 
-        binding.saveNameButton.setOnClickListener {
+        userRef.child("email").get()
+            .addOnSuccessListener { snapshot ->
+                val email = snapshot.getValue(String::class.java) ?: ""
+                binding.editEmail.setText(email)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to load email", Toast.LENGTH_SHORT).show()
+            }
+
+        userRef.child("phone").get()
+            .addOnSuccessListener { snapshot ->
+                val phone = snapshot.getValue(String::class.java) ?: ""
+                binding.editPhone.setText(phone)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to load phone", Toast.LENGTH_SHORT).show()
+            }
+
+        binding.saveProfileButton.setOnClickListener {
             val newName = binding.editName.text.toString().trim()
-            if (newName.isEmpty()) {
-                Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+            val newEmail = binding.editEmail.text.toString().trim()
+            val newPhone = binding.editPhone.text.toString().trim()
+
+            if (newName.isEmpty() || newEmail.isEmpty() || newPhone.isEmpty()) {
+                Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            userRef.child("name").setValue(newName)
+
+            val updates = mapOf(
+                "name" to newName,
+                "email" to newEmail,
+                "phone" to newPhone
+            )
+
+            userRef.updateChildren(updates)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Name updated successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .addOnFailureListener { e ->

@@ -28,6 +28,7 @@ class PinLockActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
         val savedPin = sharedPref.getString("user_pin", null)
+
         if (savedPin == null) {
             startActivity(Intent(this, SetupPinActivity::class.java))
             finish()

@@ -8,6 +8,13 @@
     android:padding="24dp">
 
     <!-- Field for Name -->
+    <ImageView
+        android:id="@+id/imageapp"
+        android:layout_width="343dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="User Profile"
+        android:src="@drawable/ic_launcher_foreground" />
     <EditText
         android:id="@+id/registerNameEditText"
         android:layout_width="match_parent"
@@ -43,6 +50,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account? Sign in"
-        android:textColor="@color/purple_500"
+        android:textColor="@color/blue_accent_dark"
         android:layout_marginTop="16dp" />
 </LinearLayout>

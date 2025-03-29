@@ -49,6 +49,7 @@
         <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="true" />
+        <activity android:name=".ui.auth.ChangePinActivity" />
 
         <activity
             android:name=".ui.main.home.TopUpActivity"
@@ -74,6 +75,8 @@
             android:name=".ui.main.profile.EditProfileActivity"
             android:exported="true" />
 
+        <activity android:name=".ui.main.profile.ChangePinActivity"
+            android:exported="true" />
 
         <activity
             android:name=".ui.main.MainActivity"

@@ -7,59 +7,62 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/editProfileTitle"
+        android:id="@+id/tvChangePinTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"
-        android:textSize="24sp"
+        android:text="Enter New PIN"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
 
     <EditText
-        android:id="@+id/editName"
+        android:id="@+id/etOldPin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter new name"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/editProfileTitle"
+        android:hint="Enter Old PIN"
+        android:inputType="numberPassword"
+        android:maxLength="6"
+        app:layout_constraintTop_toBottomOf="@id/tvChangePinTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"/>
 
     <EditText
-        android:id="@+id/editPhone"
+        android:id="@+id/etNewPin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter new phone number"
-        android:textSize="18sp"
-        android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/editName"
+        android:hint="Enter New PIN"
+        android:inputType="numberPassword"
+        android:maxLength="6"
+        app:layout_constraintTop_toBottomOf="@id/etOldPin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"/>
 
     <EditText
-        android:id="@+id/editEmail"
+        android:id="@+id/etConfirmNewPin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter new email"
-        android:textSize="18sp"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/editPhone"
+        android:hint="Confirm New PIN"
+        android:inputType="numberPassword"
+        android:maxLength="6"
+        app:layout_constraintTop_toBottomOf="@id/etNewPin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"/>
 
     <Button
-        android:id="@+id/saveProfileButton"
+        android:id="@+id/savePinButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Profile"
-        app:layout_constraintTop_toBottomOf="@id/editEmail"
+        android:text="Save PIN"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmNewPin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
