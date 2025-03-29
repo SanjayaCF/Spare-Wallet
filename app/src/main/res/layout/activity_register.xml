@@ -1,55 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <!-- Field for Name -->
-    <ImageView
-        android:id="@+id/imageapp"
-        android:layout_width="343dp"
+    <!-- Background Biru di Atas -->
+    <View
+        android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="User Profile"
-        android:src="@drawable/ic_launcher_foreground" />
-    <EditText
-        android:id="@+id/registerNameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        android:inputType="textPersonName" />
+        android:background="@drawable/bg_blue_gradient_up" />
 
-    <EditText
-        android:id="@+id/registerEmailEditText"
+    <!-- Background Putih dengan Radius di Sudut Atas -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="8dp" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/bg_white_rounded"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <EditText
-        android:id="@+id/registerPasswordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:layout_marginTop="8dp" />
+        <!-- Logo atau Gambar Aplikasi -->
+        <ImageView
+            android:id="@+id/imageapp"
+            android:layout_width="343dp"
+            android:layout_height="200dp"
+            android:contentDescription="App Logo"
+            android:src="@drawable/ic_launcher_foreground" />
 
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginTop="16dp" />
+        <!-- Input Nama -->
+        <EditText
+            android:id="@+id/registerNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:layout_marginTop="16dp"/>
 
-    <TextView
-        android:id="@+id/goToLoginTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Already have an account? Sign in"
-        android:textColor="@color/blue_accent_dark"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+        <!-- Input Email -->
+        <EditText
+            android:id="@+id/registerEmailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Input Password -->
+        <EditText
+            android:id="@+id/registerPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Tombol Register -->
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Navigasi ke Login -->
+        <TextView
+            android:id="@+id/goToLoginTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? Sign in"
+            android:textColor="@color/blue_accent_dark"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</FrameLayout>
