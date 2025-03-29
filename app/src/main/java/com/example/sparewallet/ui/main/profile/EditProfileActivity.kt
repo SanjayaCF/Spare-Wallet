@@ -16,12 +16,18 @@ class EditProfileActivity : AppCompatActivity() {
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         val userRef = FirebaseDatabase.getInstance("https://sparewallet-55512-default-rtdb.asia-southeast1.firebasedatabase.app")
             .getReference("users")
             .child(uid)
 
-        // Load existing data
+        // Load Name
         userRef.child("name").get()
             .addOnSuccessListener { snapshot ->
                 val name = snapshot.getValue(String::class.java) ?: ""
@@ -31,15 +37,17 @@ class EditProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to load name", Toast.LENGTH_SHORT).show()
             }
 
+        // Load Email from Firebase Database
         userRef.child("email").get()
             .addOnSuccessListener { snapshot ->
-                val email = snapshot.getValue(String::class.java) ?: ""
+                val email = snapshot.getValue(String::class.java) ?: "No Email"
                 binding.editEmail.setText(email)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to load email", Toast.LENGTH_SHORT).show()
             }
 
+        // Load Phone Number
         userRef.child("phone").get()
             .addOnSuccessListener { snapshot ->
                 val phone = snapshot.getValue(String::class.java) ?: ""

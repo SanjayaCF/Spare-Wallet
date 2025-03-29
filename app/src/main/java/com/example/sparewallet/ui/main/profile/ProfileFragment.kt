@@ -56,7 +56,6 @@ class ProfileFragment : Fragment() {
             startActivity(Intent(requireContext(), ChangePinActivity::class.java))
         }
 
-
         binding.logoutButton.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(requireContext(), LoginActivity::class.java))
@@ -92,7 +91,6 @@ class ProfileFragment : Fragment() {
             .getReference("users")
             .child(uid)
 
-        // Load Name
         userRef.child("name").get()
             .addOnSuccessListener { snapshot ->
                 val name = snapshot.getValue(String::class.java) ?: "User Name"
@@ -102,7 +100,6 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to load name", Toast.LENGTH_SHORT).show()
             }
 
-        // Load Email
         userRef.child("email").get()
             .addOnSuccessListener { snapshot ->
                 val email = snapshot.getValue(String::class.java) ?: "No Email"
@@ -112,7 +109,6 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to load email", Toast.LENGTH_SHORT).show()
             }
 
-        // Load Phone Number
         userRef.child("phone").get()
             .addOnSuccessListener { snapshot ->
                 val phone = snapshot.getValue(String::class.java) ?: "No Phone Number"
