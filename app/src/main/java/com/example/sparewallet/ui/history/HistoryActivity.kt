@@ -44,6 +44,7 @@ class HistoryActivity : AppCompatActivity() {
                         transactionsList.add(transaction)
                     }
                 }
+                transactionsList.sortByDescending { it.timestamp }
                 adapter.notifyDataSetChanged()
             }
             override fun onCancelled(error: DatabaseError) {
