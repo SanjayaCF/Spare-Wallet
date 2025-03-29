@@ -1,41 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-
-    <ImageView
-        android:id="@+id/imageapp"
-        android:layout_width="343dp"
+    <View
+        android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="User Profile"
-        android:src="@drawable/ic_launcher_foreground" />
-    <EditText
-        android:id="@+id/pinEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter 6-digit PIN"
-        android:inputType="numberPassword"
-        android:maxLength="6" />
+        android:background="@drawable/bg_blue_gradient_up" />
 
-    <EditText
-        android:id="@+id/confirmPinEditText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirm PIN"
-        android:inputType="numberPassword"
-        android:maxLength="6"
-        android:layout_marginTop="16dp" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/bg_white_rounded"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/setupPinButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Set PIN"
-        android:layout_marginTop="24dp" />
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageapp"
+            android:layout_width="343dp"
+            android:layout_height="200dp"
+            android:contentDescription="App Logo"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <EditText
+            android:id="@+id/pinEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter 6-digit PIN"
+            android:inputType="numberPassword"
+            android:maxLength="6"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/confirmPinEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm PIN"
+            android:inputType="numberPassword"
+            android:maxLength="6"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/setupPinButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set PIN"
+            android:layout_marginTop="24dp"/>
+    </LinearLayout>
+</FrameLayout>

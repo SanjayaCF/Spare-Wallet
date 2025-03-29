@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Background Biru di Atas -->
     <View
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@drawable/bg_blue_gradient_up" />
 
-    <!-- Background Putih dengan Radius di Sudut Atas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +17,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Logo atau Gambar Aplikasi -->
         <ImageView
             android:id="@+id/imageapp"
             android:layout_width="343dp"
@@ -27,7 +24,6 @@
             android:contentDescription="App Logo"
             android:src="@drawable/ic_launcher_foreground" />
 
-        <!-- Input Nama -->
         <EditText
             android:id="@+id/registerNameEditText"
             android:layout_width="match_parent"
@@ -36,7 +32,6 @@
             android:inputType="textPersonName"
             android:layout_marginTop="16dp"/>
 
-        <!-- Input Email -->
         <EditText
             android:id="@+id/registerEmailEditText"
             android:layout_width="match_parent"
@@ -45,7 +40,6 @@
             android:inputType="textEmailAddress"
             android:layout_marginTop="8dp"/>
 
-        <!-- Input Password -->
         <EditText
             android:id="@+id/registerPasswordEditText"
             android:layout_width="match_parent"
@@ -54,7 +48,6 @@
             android:inputType="textPassword"
             android:layout_marginTop="8dp"/>
 
-        <!-- Tombol Register -->
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
@@ -62,7 +55,6 @@
             android:text="Register"
             android:layout_marginTop="16dp"/>
 
-        <!-- Navigasi ke Login -->
         <TextView
             android:id="@+id/goToLoginTextView"
             android:layout_width="wrap_content"
