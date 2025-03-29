@@ -1,5 +1,6 @@
 package com.example.sparewallet.ui.main
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,5 +33,16 @@ class MainActivity : AppCompatActivity() {
         )
         //setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+
+        lateinit var mediaPlayer: MediaPlayer
+        mediaPlayer = MediaPlayer.create(this, R.raw.app_intro_sound)
+
+        mediaPlayer.start()
+
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+            }
     }
 }
