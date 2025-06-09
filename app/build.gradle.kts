@@ -44,7 +44,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.10" // update ke versi terbaru
     }
 }
 
@@ -63,20 +63,30 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage.ktx)
 
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.compose.ui:ui:1.4.3")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
-    implementation("androidx.compose.material3:material3:1.1.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
+    // Compose dependencies versi 1.5.3
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.compose.ui:ui:1.6.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.animation:animation:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation(libs.androidx.navigation.compose.jvmstubs)
+
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     implementation(libs.androidx.runtime.livedata)
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // Other dependencies
     implementation(libs.androidx.biometric)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.0")
     implementation("com.google.mlkit:barcode-scanning:17.0.3")
-    
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
