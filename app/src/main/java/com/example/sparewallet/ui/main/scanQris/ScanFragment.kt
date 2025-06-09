@@ -15,35 +15,159 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.budiyev.android.codescanner.*
-import com.example.sparewallet.databinding.FragmentScanBinding
+import com.example.sparewallet.R
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
 class ScanFragment : Fragment() {
 
-    private var _binding: FragmentScanBinding? = null
-    private val binding get() = _binding!!
-
     private lateinit var codeScanner: CodeScanner
     private val scanViewModel: ScanViewModel by activityViewModels()
-
     private var currentCameraId = CodeScanner.CAMERA_BACK.toString()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentScanBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ScanQrisScreen(
+                    onFlipCamera = { switchCamera() },
+                    onOpenGallery = { openGallery() },
+                    onInitializeScanner = { scannerView -> initializeScanner(scannerView) }
+                )
+            }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    @Composable
+    fun ScanQrisScreen(
+        onFlipCamera: () -> Unit,
+        onOpenGallery: () -> Unit,
+        onInitializeScanner: (CodeScannerView) -> Unit
+    ) {
 
-        val scannerView = binding.scannerView
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(Color.White)
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = "Scan Qris",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+
+                // Scanner View
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    AndroidView(
+                        factory = { context ->
+                            CodeScannerView(context).apply {
+                                onInitializeScanner(this)
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable {
+                                if (::codeScanner.isInitialized) {
+                                    codeScanner.startPreview()
+                                }
+                            }
+                    )
+                }
+            }
+
+            // Floating Action Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp, start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Flip Camera Button
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        )
+                        .clickable { onFlipCamera() }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.cameraswitch_icon),
+                        contentDescription = "Flip Camera",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                // Open Gallery Button
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.1f),
+                            shape = CircleShape
+                        )
+                        .clickable { onOpenGallery() }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.gallery_icon),
+                        contentDescription = "Open Gallery",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun initializeScanner(scannerView: CodeScannerView) {
         codeScanner = CodeScanner(requireContext(), scannerView)
 
         codeScanner.camera = CodeScanner.CAMERA_BACK
@@ -66,11 +190,6 @@ class ScanFragment : Fragment() {
                 ).show()
             }
         }
-
-        scannerView.setOnClickListener { codeScanner.startPreview() }
-
-        binding.btnFlipCamera.setOnClickListener { switchCamera() }
-        binding.btnOpenGallery.setOnClickListener { openGallery() }
 
         checkPermission(Manifest.permission.CAMERA)
     }
@@ -122,11 +241,17 @@ class ScanFragment : Fragment() {
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK && result.data != null)
-            {
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
                 val uri = result.data!!.data
                 try {
-                    val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                    val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        val source = android.graphics.ImageDecoder.createSource(requireContext().contentResolver, uri!!)
+                        android.graphics.ImageDecoder.decodeBitmap(source)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                    }
+
                     val inputImage = InputImage.fromBitmap(bitmap, 0)
                     val scanner = BarcodeScanning.getClient()
 
@@ -151,9 +276,22 @@ class ScanFragment : Fragment() {
             }
         }
 
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                pendingPermissionCallback?.invoke()
+                pendingPermissionCallback = null
+            } else {
+                Toast.makeText(requireContext(), "Permission required", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private var pendingPermissionCallback: (() -> Unit)? = null
+
     private fun checkPermission(permission: String, onGranted: (() -> Unit)? = null) {
         if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(permission), 200)
+            pendingPermissionCallback = onGranted
+            permissionLauncher.launch(permission)
         } else {
             onGranted?.invoke()
         }
@@ -161,16 +299,15 @@ class ScanFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        codeScanner.startPreview()
+        if (::codeScanner.isInitialized) {
+            codeScanner.startPreview()
+        }
     }
 
     override fun onPause() {
-        codeScanner.releaseResources()
+        if (::codeScanner.isInitialized) {
+            codeScanner.releaseResources()
+        }
         super.onPause()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
