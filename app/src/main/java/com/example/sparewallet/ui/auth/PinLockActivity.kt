@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.compose.material3.MaterialTheme
 import androidx.fragment.app.FragmentActivity
 import com.example.sparewallet.ui.main.MainActivity
+import com.example.sparewallet.ui.theme.SpareWalletTheme
 import java.util.concurrent.Executor
 
 class PinLockActivity : FragmentActivity() {
@@ -56,7 +57,7 @@ class PinLockActivity : FragmentActivity() {
         }
 
         setContent {
-            MaterialTheme {
+            SpareWalletTheme {
                 PinLockScreen(
                     savedPin = savedPin ?: "",
                     onSuccess = { navigateToMain() }

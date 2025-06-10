@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.example.sparewallet.R
 import com.example.sparewallet.ui.main.MainActivity
+import com.example.sparewallet.ui.theme.SpareWalletTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlin.random.Random
@@ -35,7 +36,7 @@ class RegisterActivity : FragmentActivity() {
         auth = FirebaseAuth.getInstance()
 
         setContent {
-            MaterialTheme {
+            SpareWalletTheme {
                 RegisterScreen(
                     onRegister = { name, email, password, onResult ->
                         registerUser(name, email, password, onResult)

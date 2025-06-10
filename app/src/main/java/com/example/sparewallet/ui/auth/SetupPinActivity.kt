@@ -20,12 +20,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.sparewallet.ui.main.MainActivity
+import com.example.sparewallet.ui.theme.SpareWalletTheme
 
 class SetupPinActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SetupPinScreen()
+            SpareWalletTheme { SetupPinScreen() }
         }
     }
 }
