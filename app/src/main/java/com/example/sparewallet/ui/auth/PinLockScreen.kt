@@ -1,11 +1,6 @@
 package com.example.sparewallet.ui.auth
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,23 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.sparewallet.ui.main.MainActivity
-
-class SetupPinActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SetupPinScreen()
-        }
-    }
-}
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupPinScreen() {
+fun PinLockScreen(savedPin: String, onSuccess: () -> Unit) {
     val context = LocalContext.current
 
     var pin by remember { mutableStateOf("") }
+    var isButtonEnabled by remember { mutableStateOf(true) }
+
     val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6)) // blue gradient
 
     Box(
@@ -56,14 +44,22 @@ fun SetupPinScreen() {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    text = "Enter your 6-digit PIN",
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
                 OutlinedTextField(
                     value = pin,
                     onValueChange = {
-                        if (it.length <= 6 && it.all { ch -> ch.isDigit() }) {
+                        if (it.length <= 6 && it.all { char -> char.isDigit() }) {
                             pin = it
                         }
                     },
-                    label = { Text("Enter 6-digit PIN") },
+                    label = { Text("PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                     singleLine = true,
@@ -78,23 +74,14 @@ fun SetupPinScreen() {
                             Toast.makeText(context, "Please enter a 6-digit PIN", Toast.LENGTH_SHORT).show()
                             return@Button
                         }
-
-                        val sharedPref = context.getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
-                        val savedPin = sharedPref.getString("user_pin", null)
-
-                        if (savedPin == null) {
-                            Toast.makeText(context, "No PIN set. Please set PIN first.", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
-
                         if (pin == savedPin) {
-                            Toast.makeText(context, "PIN verified. Logging in...", Toast.LENGTH_SHORT).show()
-                            context.startActivity(Intent(context, MainActivity::class.java))
-                            (context as? ComponentActivity)?.finish()
+                            onSuccess()
                         } else {
-                            Toast.makeText(context, "Incorrect PIN. Try again.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Incorrect PIN", Toast.LENGTH_SHORT).show()
+                            pin = ""
                         }
                     },
+                    enabled = isButtonEnabled,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Login")
