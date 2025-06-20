@@ -44,7 +44,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10" // update ke versi terbaru
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 }
 
@@ -63,14 +63,14 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.storage.ktx)
 
-    // Compose dependencies versi 1.5.3
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.compose.ui:ui:1.6.1")
+    implementation("androidx.compose.ui:ui-text:1.6.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.animation:animation:1.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation(libs.androidx.navigation.compose.jvmstubs)
+    implementation("androidx.navigation:navigation-compose:2.6.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.1")
     implementation("io.coil-kt:coil-compose:2.5.0")
@@ -81,7 +81,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
-    // Other dependencies
     implementation(libs.androidx.biometric)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.0")

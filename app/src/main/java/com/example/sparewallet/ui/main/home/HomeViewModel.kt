@@ -8,7 +8,7 @@ import com.google.firebase.database.*
 
 class HomeViewModel : ViewModel() {
 
-    // Initialize Firebase Database with your URL
+
     private val database = FirebaseDatabase.getInstance("https://sparewallet-55512-default-rtdb.asia-southeast1.firebasedatabase.app")
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default_user"
     private val userRef = database.getReference("users").child(userId)
@@ -35,7 +35,6 @@ class HomeViewModel : ViewModel() {
                 _name.value = snapshot.child("name").getValue(String::class.java) ?: ""
             }
             override fun onCancelled(error: DatabaseError) {
-                // no action for now
             }
         })
     }

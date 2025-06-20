@@ -21,7 +21,7 @@ class ProfileFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SpareWalletTheme {
-                    ProfileScreen() // <-- tanpa parameter
+                    ProfileScreen()
                 }
             }
         }
