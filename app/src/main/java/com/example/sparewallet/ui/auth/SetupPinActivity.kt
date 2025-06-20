@@ -26,7 +26,9 @@ class SetupPinActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SpareWalletTheme { SetupPinScreen() }
+            SpareWalletTheme {
+                SetupPinScreen()
+            }
         }
     }
 }
@@ -36,8 +38,9 @@ class SetupPinActivity : ComponentActivity() {
 fun SetupPinScreen() {
     val context = LocalContext.current
 
-    var pin by remember { mutableStateOf("") }
-    val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6)) // blue gradient
+    var newPin by remember { mutableStateOf("") }
+    var confirmPin by remember { mutableStateOf("") }
+    val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6))
 
     Box(
         modifier = Modifier
@@ -58,13 +61,21 @@ fun SetupPinScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = pin,
-                    onValueChange = {
-                        if (it.length <= 6 && it.all { ch -> ch.isDigit() }) {
-                            pin = it
-                        }
-                    },
-                    label = { Text("Enter 6-digit PIN") },
+                    value = newPin,
+                    onValueChange = { if (it.length <= 6 && it.all(Char::isDigit)) newPin = it },
+                    label = { Text("Enter new 6-digit PIN") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = confirmPin,
+                    onValueChange = { if (it.length <= 6 && it.all(Char::isDigit)) confirmPin = it },
+                    label = { Text("Confirm PIN") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                     singleLine = true,
@@ -75,30 +86,39 @@ fun SetupPinScreen() {
 
                 Button(
                     onClick = {
-                        if (pin.length != 6) {
-                            Toast.makeText(context, "Please enter a 6-digit PIN", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
+                        when {
+                            newPin.length != 6 || confirmPin.length != 6 -> {
+                                Toast.makeText(context, "Both PINs must be 6 digits", Toast.LENGTH_SHORT).show()
+                            }
+                            newPin != confirmPin -> {
+                                Toast.makeText(context, "PINs do not match", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                val sharedPref = context.getSharedPreferences(
+                                    "SpareWalletPrefs",
+                                    Context.MODE_PRIVATE
+                                )
+                                sharedPref.edit()
+                                    .putString("user_pin", newPin)
+                                    .apply()
 
-                        val sharedPref = context.getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
-                        val savedPin = sharedPref.getString("user_pin", null)
+                                Toast.makeText(
+                                    context,
+                                    "PIN set successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                        if (savedPin == null) {
-                            Toast.makeText(context, "No PIN set. Please set PIN first.", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
-
-                        if (pin == savedPin) {
-                            Toast.makeText(context, "PIN verified. Logging in...", Toast.LENGTH_SHORT).show()
-                            context.startActivity(Intent(context, MainActivity::class.java))
-                            (context as? ComponentActivity)?.finish()
-                        } else {
-                            Toast.makeText(context, "Incorrect PIN. Try again.", Toast.LENGTH_SHORT).show()
+                                // Navigate to main screen or finish setup
+                                context.startActivity(
+                                    Intent(context, MainActivity::class.java)
+                                )
+                                (context as? ComponentActivity)?.finish()
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Login")
+                    Text("Set PIN")
                 }
             }
         }
