@@ -1,6 +1,5 @@
 package com.example.sparewallet.ui.main.home
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -9,20 +8,23 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import com.example.sparewallet.ui.theme.SpareWalletTheme
+import com.example.sparewallet.model.TransactionRecord
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Transaction
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -62,25 +64,25 @@ class TopUpViewModel : ViewModel() {
         }
 
         val balanceRef = database.getReference("users").child(uid).child("balance")
-        balanceRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
+        balanceRef.runTransaction(object : Transaction.Handler {
             override fun doTransaction(currentData: com.google.firebase.database.MutableData)
-                    : com.google.firebase.database.Transaction.Result {
+                    : Transaction.Result {
                 val currentBalance = currentData.getValue(String::class.java)?.toDoubleOrNull() ?: 0.0
                 val newBalance = currentBalance + topUpAmount
                 currentData.value = newBalance.toString()
-                return com.google.firebase.database.Transaction.success(currentData)
+                return Transaction.success(currentData)
             }
 
             override fun onComplete(
-                error: com.google.firebase.database.DatabaseError?,
+                error: DatabaseError?,
                 committed: Boolean,
-                currentData: com.google.firebase.database.DataSnapshot?
+                currentData: DataSnapshot?
             ) {
                 if (error != null) {
                     onError(error.message ?: "Top up failed")
                 } else if (committed) {
                     val recordRef = database.getReference("transactions").child(uid).push()
-                    val transactionRecord = com.example.sparewallet.model.TransactionRecord(
+                    val transactionRecord = TransactionRecord(
                         type = "Top Up",
                         amount = topUpAmount.toString(),
                         timestamp = System.currentTimeMillis(),
@@ -94,16 +96,19 @@ class TopUpViewModel : ViewModel() {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopUpScreen(
     viewModel: TopUpViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onFinished: () -> Unit
 ) {
-    val context = LocalContext.current
     val amountState by remember { derivedStateOf { viewModel.amountText } }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(title = { Text("Top Up Your Wallet") })
         }
@@ -129,7 +134,12 @@ fun TopUpScreen(
                 onClick = {
                     viewModel.performTopUp(
                         onSuccess = { onFinished() },
-                        onError = { msg -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+                        onError = { msg ->
+                            // Ganti Toast dengan Snackbar
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        }
                     )
                 },
                 modifier = Modifier.fillMaxWidth()

@@ -1,7 +1,11 @@
 package com.example.sparewallet.ui.transfer
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.sparewallet.model.TransactionRecord
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -12,7 +16,8 @@ import com.google.firebase.database.Transaction
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.Locale
 
 class TransferDetailViewModel : ViewModel() {
 
@@ -24,9 +29,38 @@ class TransferDetailViewModel : ViewModel() {
     private val _balance = MutableStateFlow(0.0)
     val balance: StateFlow<Double> = _balance
 
+    // DITAMBAHKAN: State untuk amount dengan TextFieldValue untuk formatting
+    var amount by mutableStateOf(TextFieldValue(""))
+        private set
+
+    // DITAMBAHKAN: Formatter angka
+    private val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
+
+
     init {
         fetchCurrentUserBalance()
     }
+
+    // DITAMBAHKAN: Fungsi untuk menangani perubahan input dan memformatnya
+    fun onAmountChange(newValue: TextFieldValue) {
+        if (newValue.text == amount.text) return
+        val cleanString = newValue.text.replace(",", "")
+        if (cleanString.isEmpty()) {
+            amount = TextFieldValue("")
+            return
+        }
+        try {
+            val parsed = cleanString.toDouble()
+            val formatted = numberFormat.format(parsed)
+            amount = TextFieldValue(
+                text = formatted,
+                selection = TextRange(formatted.length)
+            )
+        } catch (e: NumberFormatException) {
+            // Abaikan jika input tidak valid
+        }
+    }
+
 
     private fun fetchCurrentUserBalance() {
         if (currentUserUid.isEmpty()) return
@@ -37,7 +71,7 @@ class TransferDetailViewModel : ViewModel() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error fetching balance, maybe log it
+                // Handle error
             }
         })
     }
@@ -45,7 +79,7 @@ class TransferDetailViewModel : ViewModel() {
     fun performTransfer(
         recipientAccount: String,
         recipientName: String,
-        amount: Double,
+        transferAmount: Double, // amount sekarang berbentuk Double
         onResult: (success: Boolean, message: String) -> Unit
     ) {
         if (currentUserUid.isEmpty()) {
@@ -55,14 +89,13 @@ class TransferDetailViewModel : ViewModel() {
 
         val senderRef = usersRef.child(currentUserUid).child("balance")
 
-        // 1. Jalankan transaksi untuk mengurangi saldo pengirim
         senderRef.runTransaction(object : Transaction.Handler {
             override fun doTransaction(currentData: MutableData): Transaction.Result {
                 val currentBalance = currentData.getValue(String::class.java)?.toDoubleOrNull() ?: 0.0
-                if (currentBalance < amount) {
-                    return Transaction.abort() // Batalkan jika saldo tidak cukup
+                if (currentBalance < transferAmount) {
+                    return Transaction.abort()
                 }
-                val newBalance = currentBalance - amount
+                val newBalance = currentBalance - transferAmount
                 currentData.value = newBalance.toString()
                 return Transaction.success(currentData)
             }
@@ -71,9 +104,8 @@ class TransferDetailViewModel : ViewModel() {
                 if (error != null) {
                     onResult(false, "Transfer failed: ${error.message}")
                 } else if (committed) {
-                    // Jika saldo pengirim berhasil dikurangi, lanjutkan ke penerima
-                    recordSenderTransaction(recipientName, recipientAccount, amount)
-                    updateRecipientBalance(recipientAccount, recipientName, amount, onResult)
+                    recordSenderTransaction(recipientName, recipientAccount, transferAmount)
+                    updateRecipientBalance(recipientAccount, recipientName, transferAmount, onResult)
                 } else {
                     onResult(false, "Insufficient balance.")
                 }
@@ -95,7 +127,6 @@ class TransferDetailViewModel : ViewModel() {
                     val recipientUid = recipientSnapshot.key ?: ""
                     val recipientBalanceRef = usersRef.child(recipientUid).child("balance")
 
-                    // 2. Jalankan transaksi untuk menambah saldo penerima
                     recipientBalanceRef.runTransaction(object : Transaction.Handler {
                         override fun doTransaction(currentData: MutableData): Transaction.Result {
                             val currentBalance = currentData.getValue(String::class.java)?.toDoubleOrNull() ?: 0.0
@@ -110,13 +141,11 @@ class TransferDetailViewModel : ViewModel() {
                                 onResult(true, "Transfer successful!")
                             } else {
                                 onResult(false, "Failed to update recipient's balance.")
-                                // TODO: Handle refund logic if recipient update fails
                             }
                         }
                     })
                 } else {
                     onResult(false, "Recipient account not found.")
-                    // TODO: Handle refund logic if recipient not found
                 }
             }
             override fun onCancelled(error: DatabaseError) {
@@ -136,13 +165,16 @@ class TransferDetailViewModel : ViewModel() {
     }
 
     private fun recordRecipientTransaction(recipientUid: String, amount: Double) {
-        val senderName = auth.currentUser?.displayName ?: "Unknown Sender"
-        val recipientTransaction = TransactionRecord(
-            type = "Transfer Received",
-            amount = amount.toString(),
-            timestamp = System.currentTimeMillis(),
-            details = "From: $senderName"
-        )
-        database.getReference("transactions").child(recipientUid).push().setValue(recipientTransaction)
+        // Ambil nama pengirim dari user yang sedang login
+        usersRef.child(currentUserUid).child("name").get().addOnSuccessListener { snapshot ->
+            val senderName = snapshot.getValue(String::class.java) ?: "Unknown Sender"
+            val recipientTransaction = TransactionRecord(
+                type = "Transfer Received",
+                amount = amount.toString(),
+                timestamp = System.currentTimeMillis(),
+                details = "From: $senderName"
+            )
+            database.getReference("transactions").child(recipientUid).push().setValue(recipientTransaction)
+        }
     }
 }

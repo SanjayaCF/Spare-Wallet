@@ -44,24 +44,28 @@
 
         <activity
             android:name=".ui.auth.LoginActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.auth.RegisterActivity"
-            android:exported="true" />
-        <activity android:name=".ui.auth.ChangePinActivity" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.main.home.TopUpActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.transfer.TransferActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.transfer.TransferDetailActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".common.ComingSoonActivity"

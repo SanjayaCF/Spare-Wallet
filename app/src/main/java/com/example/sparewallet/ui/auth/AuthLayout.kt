@@ -40,7 +40,7 @@ fun AuthScreenLayout(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground_white),
                 contentDescription = "App Logo",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

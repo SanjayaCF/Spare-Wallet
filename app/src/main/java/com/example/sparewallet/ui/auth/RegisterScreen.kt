@@ -1,6 +1,6 @@
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,9 +15,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.sparewallet.ui.auth.AuthScreenLayout
-import com.example.sparewallet.ui.auth.LoginActivity
 import com.example.sparewallet.ui.auth.SetupPinActivity
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     onRegister: (name: String, email: String, password: String, onResult: (Boolean, String?) -> Unit) -> Unit,
@@ -29,75 +30,89 @@ fun RegisterScreen(
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    AuthScreenLayout(screenTitle = "Create Account") {
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
+    // State untuk mengelola Snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-        Spacer(modifier = Modifier.height(8.dp))
+    // Scaffold membungkus layout untuk menyediakan slot bagi Snackbar
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues)) {
+            AuthScreenLayout(screenTitle = "Create Account") {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
-        )
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-        Button(
-            onClick = {
-                isLoading = true
-                onRegister(name.trim(), email.trim(), password.trim()) { success, message ->
-                    isLoading = false
-                    if (success) {
-                        (context as? ComponentActivity)?.apply {
-                            startActivity(Intent(this, SetupPinActivity::class.java))
-                            finish()
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        isLoading = true
+                        onRegister(name.trim(), email.trim(), password.trim()) { success, message ->
+                            isLoading = false
+                            if (success) {
+                                (context as? ComponentActivity)?.apply {
+                                    startActivity(Intent(this, SetupPinActivity::class.java))
+                                    finish()
+                                }
+                            } else {
+                                // Menampilkan Snackbar jika terjadi error
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(message ?: "An unknown error occurred")
+                                }
+                            }
                         }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading,
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
                     } else {
-                        Toast.makeText(context, message ?: "Error", Toast.LENGTH_LONG).show()
+                        Text("REGISTER")
                     }
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading,
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            } else {
-                Text("REGISTER")
-            }
-        }
 
-        TextButton(
-            onClick = onGoToLogin,
-            modifier = Modifier.padding(top = 16.dp),
-            enabled = !isLoading
-        ) {
-            Text("Already have an account? Sign in")
+                TextButton(
+                    onClick = onGoToLogin,
+                    modifier = Modifier.padding(top = 16.dp),
+                    enabled = !isLoading
+                ) {
+                    Text("Already have an account? Sign in")
+                }
+            }
         }
     }
 }

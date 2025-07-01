@@ -1,8 +1,6 @@
 package com.example.sparewallet.ui.transfer
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -16,10 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sparewallet.ui.theme.SpareWalletTheme
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class TransferDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +44,7 @@ fun TransferDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var amount by remember { mutableStateOf("") }
+    val amount by remember { derivedStateOf { viewModel.amount } }
     val balance by viewModel.balance.collectAsState()
 
     Scaffold(
@@ -70,7 +65,7 @@ fun TransferDetailScreen(
 
             OutlinedTextField(
                 value = amount,
-                onValueChange = { amount = it },
+                onValueChange = { viewModel.onAmountChange(it) },
                 label = { Text("Amount to Transfer") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
@@ -78,7 +73,9 @@ fun TransferDetailScreen(
 
             Button(
                 onClick = {
-                    val transferAmount = amount.toDoubleOrNull()
+                    val cleanAmountString = amount.text.replace(",", "")
+                    val transferAmount = cleanAmountString.toDoubleOrNull()
+
                     scope.launch {
                         when {
                             transferAmount == null || transferAmount <= 0 -> {
@@ -91,7 +88,8 @@ fun TransferDetailScreen(
                                 viewModel.performTransfer(
                                     recipientAccount = recipientAccount,
                                     recipientName = recipientName,
-                                    amount = transferAmount,
+                                    // PERBAIKAN: Mengganti nama parameter dari 'amount' menjadi 'transferAmount'
+                                    transferAmount = transferAmount,
                                     onResult = { success, message ->
                                         scope.launch {
                                             snackbarHostState.showSnackbar(message)
