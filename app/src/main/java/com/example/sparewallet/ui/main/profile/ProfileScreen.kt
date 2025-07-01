@@ -21,13 +21,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.sparewallet.ui.auth.ChangePinActivity
+import com.example.sparewallet.R
 import com.example.sparewallet.ui.auth.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.example.sparewallet.R
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 @Composable
@@ -45,7 +42,7 @@ fun ProfileScreen(
     var isLoading by remember { mutableStateOf(false) }
 
     // Key untuk trigger refresh - berubah setiap kali kita perlu refresh data
-    var refreshKey by rememberSaveable { mutableStateOf(0) }
+    var refreshKey by remember { mutableStateOf(0) }
 
     // Launcher untuk EditProfile dengan result callback
     val editProfileLauncher = rememberLauncherForActivityResult(
@@ -116,7 +113,7 @@ fun ProfileScreen(
     ) {
         // Profile Image
         Image(
-            painter = rememberAsyncImagePainter(model = imageUri ?: R.drawable.ic_profile),
+            painter = rememberAsyncImagePainter(model = imageUri ?: R.drawable.ic_user),
             contentDescription = "Profile Picture",
             modifier = Modifier
                 .size(120.dp)

@@ -4,40 +4,28 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import com.example.sparewallet.R
-import com.example.sparewallet.ui.theme.SpareWalletTheme
 import com.example.sparewallet.ui.main.home.HomeScreen
-import com.example.sparewallet.ui.main.profile.ProfileFragment
 import com.example.sparewallet.ui.main.profile.ProfileScreen
 import com.example.sparewallet.ui.main.scanQris.ScanScreen
-import androidx.compose.foundation.layout.size
+import com.example.sparewallet.ui.theme.SpareWalletTheme
 
 sealed class MainNavItem(val route: String, val icon: Int, val label: String) {
     object Home : MainNavItem("home", R.drawable.ic_home, "Home")
-    object Dashboard : MainNavItem("dashboard", R.drawable.ic_scan, "Scan")
+    object Scan : MainNavItem("scan", R.drawable.ic_scan, "Scan")
     object Profile : MainNavItem("profile", R.drawable.ic_user, "Profile")
 }
 
@@ -47,68 +35,89 @@ fun MainScreen() {
     val navController = rememberNavController()
     val items = listOf(
         MainNavItem.Home,
-        MainNavItem.Dashboard,
+        MainNavItem.Scan,
         MainNavItem.Profile
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("SpareWallet", fontWeight = FontWeight.Bold)
-                }
+                title = { Text("SpareWallet", fontWeight = FontWeight.Bold) }
             )
         },
-        bottomBar = {
-            NavigationBar(
-                modifier = Modifier.height(56.dp),
-                tonalElevation = 4.dp
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(MainNavItem.Scan.route) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                shape = CircleShape,
+                modifier = Modifier
+                    .size(70.dp)
+                    .offset(y = 60.dp),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp)
             ) {
-                val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-                items.forEach { item ->
+                Icon(
+                    painter = painterResource(id = MainNavItem.Scan.icon),
+                    contentDescription = MainNavItem.Scan.label,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        bottomBar = {
+            NavigationBar {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+
+                items.forEach { screen ->
+                    val isSelected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                    val isScanButton = screen.route == MainNavItem.Scan.route
+
                     NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(item.icon),
-                                contentDescription = item.label,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = item.label,
-                                fontSize = MaterialTheme.typography.labelSmall.fontSize // Smaller font
-                            )
-                        },
-                        selected = currentRoute == item.route,
+                        selected = isSelected && !isScanButton,
                         onClick = {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (!isScanButton) {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
-                        }
+                        },
+                        label = { Text(screen.label, fontSize = 12.sp) },
+                        icon = {
+                            val alpha = if (isScanButton) 0f else 1f
+                            Icon(
+                                painter = painterResource(id = screen.icon),
+                                contentDescription = screen.label,
+                                modifier = Modifier
+                                    .size(26.dp)
+                                    .alpha(alpha)
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 }
             }
         }
     ) { innerPadding ->
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(innerPadding)
-        ) {
+        Column(Modifier.padding(innerPadding)) {
             NavHost(navController, startDestination = MainNavItem.Home.route) {
-                composable(MainNavItem.Home.route) {
-                    HomeScreen()
-                }
-                composable(MainNavItem.Dashboard.route) {
-                    ScanScreen()
-                }
-                composable(MainNavItem.Profile.route) {
-                    ProfileScreen()
-                }
+                composable(MainNavItem.Home.route) { HomeScreen() }
+                composable(MainNavItem.Scan.route) { ScanScreen() }
+                composable(MainNavItem.Profile.route) { ProfileScreen() }
             }
         }
     }
@@ -118,9 +127,7 @@ fun MainScreen() {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         com.google.firebase.database.FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-
         setContent {
             SpareWalletTheme {
                 DisposableEffect(Unit) {

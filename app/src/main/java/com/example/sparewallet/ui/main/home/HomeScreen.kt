@@ -14,6 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +32,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +40,6 @@ import com.example.sparewallet.R
 import com.example.sparewallet.common.ComingSoonActivity
 import com.example.sparewallet.ui.history.HistoryActivity
 import com.example.sparewallet.ui.transfer.TransferActivity
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeScreen(
@@ -58,10 +62,10 @@ fun HomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
-                shape = RoundedCornerShape(24.dp),
+            ElevatedCard(
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -84,18 +88,17 @@ fun HomeScreen(
                         Column {
                             Text(
                                 text = name,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                             Text(
                                 text = "Account Number: ",
-                                fontSize = 16.sp,
+                                style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                             Text(
                                 text = accountNumber,
-                                fontSize = 16.sp,
+                                style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.clickable {
                                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -108,7 +111,7 @@ fun HomeScreen(
                     }
 
                     Divider(
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                         thickness = 1.dp,
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
@@ -117,16 +120,14 @@ fun HomeScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = "My Wallet",
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                             val amount = balance.toDoubleOrNull() ?: 0.0
                             val formattedBalance = "%,.0f".format(amount)
                             Text(
                                 text = "Rp. $formattedBalance",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.padding(top = 8.dp)
                             )
@@ -135,9 +136,9 @@ fun HomeScreen(
                 }
             }
 
-            Card(
-                shape = RoundedCornerShape(16.dp),
+            ElevatedCard(
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -178,28 +179,26 @@ fun HomeScreen(
                         ) {
                             rowItems.forEach { (iconRes, title, action) ->
                                 Column(
-                                    modifier = Modifier
-                                        .clickable { action() }
-                                        .padding(8.dp),
+                                    modifier = Modifier.padding(vertical = 8.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(64.dp)
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.primary),
-                                        contentAlignment = Alignment.Center
+                                    IconButton(
+                                        onClick = action,
+                                        modifier = Modifier.size(64.dp),
+                                        colors = IconButtonDefaults.iconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary,
+                                            contentColor = MaterialTheme.colorScheme.onPrimary
+                                        )
                                     ) {
-                                        Image(
+                                        Icon(
                                             painter = painterResource(id = iconRes),
                                             contentDescription = title,
-                                            modifier = Modifier.size(32.dp),
-                                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                                            modifier = Modifier.size(32.dp)
                                         )
                                     }
                                     Text(
                                         text = title,
-                                        fontSize = 14.sp,
+                                        style = MaterialTheme.typography.labelMedium,
                                         modifier = Modifier.padding(top = 8.dp)
                                     )
                                 }
@@ -210,10 +209,4 @@ fun HomeScreen(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
 }

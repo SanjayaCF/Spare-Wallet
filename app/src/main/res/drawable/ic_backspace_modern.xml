@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- rotate so arrow points left -->
+    <group
+        android:rotation="-90"
+        android:pivotX="12"
+        android:pivotY="12">
+
+        <!-- outer arrow outline -->
+        <path
+            android:pathData="M12,2 L4,9 L4,21 H20 L20,9 Z"
+            android:fillColor="@android:color/transparent"
+            android:strokeColor="#000000"
+            android:strokeWidth="2"
+            android:strokeLineJoin="round"/>
+
+        <!-- the “X” -->
+        <path
+            android:pathData="M13.7,15.3
+                               L12,13.6
+                               L10.3,15.3
+                               L9.6,14.6
+                               L11.3,12.9
+                               L9.6,11.2
+                               L10.3,10.5
+                               L12,12.2
+                               L13.7,10.5
+                               L14.4,11.2
+                               L12.7,12.9
+                               L14.4,14.6
+                               L13.7,15.3 Z"
+            android:fillColor="#000000"/>
+    </group>
+</vector>

@@ -3,30 +3,43 @@ package com.example.sparewallet.ui.auth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.sparewallet.ui.main.MainActivity
 import com.example.sparewallet.ui.theme.SpareWalletTheme
+import kotlinx.coroutines.launch
 
 class SetupPinActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SpareWalletTheme { SetupPinScreen() }
+            SpareWalletTheme {
+                SetupPinScreen()
+            }
         }
     }
 }
@@ -35,72 +48,112 @@ class SetupPinActivity : ComponentActivity() {
 @Composable
 fun SetupPinScreen() {
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    var pin by remember { mutableStateOf("") }
-    val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6)) // blue gradient
+    var newPin by remember { mutableStateOf("") }
+    var confirmPin by remember { mutableStateOf("") }
+    var isConfirming by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.verticalGradient(gradientColors))
-    ) {
-        Surface(
+    val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6))
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 150.dp),
-            shape = MaterialTheme.shapes.large,
-            color = Color.White
+                .padding(paddingValues)
+                .background(Brush.verticalGradient(gradientColors))
         ) {
-            Column(
+            Surface(
                 modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(top = 100.dp),
+                shape = MaterialTheme.shapes.large,
+                color = Color.White
             ) {
-                OutlinedTextField(
-                    value = pin,
-                    onValueChange = {
-                        if (it.length <= 6 && it.all { ch -> ch.isDigit() }) {
-                            pin = it
-                        }
-                    },
-                    label = { Text("Enter 6-digit PIN") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = {
-                        if (pin.length != 6) {
-                            Toast.makeText(context, "Please enter a 6-digit PIN", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
-
-                        val sharedPref = context.getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
-                        val savedPin = sharedPref.getString("user_pin", null)
-
-                        if (savedPin == null) {
-                            Toast.makeText(context, "No PIN set. Please set PIN first.", Toast.LENGTH_SHORT).show()
-                            return@Button
-                        }
-
-                        if (pin == savedPin) {
-                            Toast.makeText(context, "PIN verified. Logging in...", Toast.LENGTH_SHORT).show()
-                            context.startActivity(Intent(context, MainActivity::class.java))
-                            (context as? ComponentActivity)?.finish()
+                Crossfade(targetState = isConfirming, label = "PinSetupCrossfade") { confirming ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (!confirming) {
+                            // Stage 1: Enter New PIN
+                            EnterPinStage(
+                                title = "Create a New PIN",
+                                pin = newPin,
+                                onPinChange = { newPin = it },
+                                onPinComplete = { isConfirming = true }
+                            )
                         } else {
-                            Toast.makeText(context, "Incorrect PIN. Try again.", Toast.LENGTH_SHORT).show()
+                            // Stage 2: Confirm PIN
+                            EnterPinStage(
+                                title = "Confirm Your PIN",
+                                pin = confirmPin,
+                                onPinChange = { confirmPin = it },
+                                onPinComplete = {
+                                    scope.launch {
+                                        if (newPin == confirmPin) {
+                                            val sharedPref = context.getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
+                                            sharedPref.edit().putString("user_pin", newPin).apply()
+                                            snackbarHostState.showSnackbar("PIN set successfully!")
+                                            context.startActivity(Intent(context, MainActivity::class.java))
+                                            (context as? ComponentActivity)?.finish()
+                                        } else {
+                                            snackbarHostState.showSnackbar("PINs do not match. Please try again.")
+                                            newPin = ""
+                                            confirmPin = ""
+                                            isConfirming = false
+                                        }
+                                    }
+                                }
+                            )
                         }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Login")
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun EnterPinStage(
+    title: String,
+    pin: String,
+    onPinChange: (String) -> Unit,
+    onPinComplete: () -> Unit
+) {
+    LaunchedEffect(pin) {
+        if (pin.length == 6) {
+            onPinComplete()
+        }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.height(32.dp))
+            PinDisplay(pinLength = pin.length)
+        }
+        PinKeypad(
+            onNumberClick = { number ->
+                if (pin.length < 6) {
+                    onPinChange(pin + number)
+                }
+            },
+            onBackspaceClick = {
+                if (pin.isNotEmpty()) {
+                    onPinChange(pin.dropLast(1))
+                }
+            }
+        )
     }
 }

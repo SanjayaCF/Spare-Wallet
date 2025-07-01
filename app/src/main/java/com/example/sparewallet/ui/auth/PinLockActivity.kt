@@ -3,12 +3,10 @@ package com.example.sparewallet.ui.auth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.compose.material3.MaterialTheme
 import androidx.fragment.app.FragmentActivity
 import com.example.sparewallet.ui.main.MainActivity
 import com.example.sparewallet.ui.theme.SpareWalletTheme
@@ -38,13 +36,7 @@ class PinLockActivity : FragmentActivity() {
                 super.onAuthenticationSucceeded(result)
                 navigateToMain()
             }
-
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                // Tambahkan handling error jika diperlukan
-            }
         })
-
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric Authentication")
             .setSubtitle("Use your fingerprint to unlock")
@@ -52,15 +44,20 @@ class PinLockActivity : FragmentActivity() {
             .build()
 
         val biometricManager = BiometricManager.from(this)
-        if (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS) {
+        val canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+
+        if (canAuthenticate) {
             biometricPrompt.authenticate(promptInfo)
         }
 
         setContent {
             SpareWalletTheme {
                 PinLockScreen(
-                    savedPin = savedPin ?: "",
-                    onSuccess = { navigateToMain() }
+                    savedPin = savedPin,
+                    onSuccess = { navigateToMain() },
+                    onBiometricRequested = if (canAuthenticate) {
+                        { biometricPrompt.authenticate(promptInfo) }
+                    } else null
                 )
             }
         }
