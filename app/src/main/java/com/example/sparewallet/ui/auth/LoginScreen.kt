@@ -24,11 +24,9 @@ fun LoginScreen() {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Bungkus dengan Scaffold
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        // Gunakan padding dari Scaffold
         Box(modifier = Modifier.padding(paddingValues)) {
             AuthScreenLayout(screenTitle = "Welcome Back!") {
                 OutlinedTextField(
@@ -63,7 +61,6 @@ fun LoginScreen() {
                                         context.startActivity(Intent(context, PinLockActivity::class.java))
                                         (context as? android.app.Activity)?.finish()
                                     } else {
-                                        // Ganti Toast dengan Snackbar
                                         scope.launch {
                                             snackbarHostState.showSnackbar(
                                                 message = "Login failed: ${task.exception?.message ?: "Unknown error"}"
@@ -73,7 +70,6 @@ fun LoginScreen() {
                                 }
                         } else {
                             isLoading = false
-                            // Ganti Toast dengan Snackbar
                             scope.launch {
                                 snackbarHostState.showSnackbar("Please enter email and password")
                             }

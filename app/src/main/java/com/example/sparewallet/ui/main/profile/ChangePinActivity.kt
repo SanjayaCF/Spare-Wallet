@@ -20,13 +20,11 @@ class ChangePinActivity : ComponentActivity() {
                 ChangePinScreen(
                     viewModel = viewModel,
                     onPinChangedSuccessfully = {
-                        // Logika navigasi setelah PIN berhasil diubah
                         val intent = Intent(this, MainActivity::class.java).apply {
-                            // Membersihkan stack activity agar tidak kembali ke halaman PIN
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         }
                         startActivity(intent)
-                        finish() // Tutup ChangePinActivity
+                        finish()
                     }
                 )
             }

@@ -16,15 +16,13 @@ class EditProfileActivity : ComponentActivity() {
                 SpareWalletTheme {
                     EditProfileScreen(
                         onProfileUpdated = {
-                            finish() // menutup activity setelah update
+                            finish()
                         }
                     )
                 }
             }
         } catch (e: Exception) {
-            // Log error untuk debugging
             e.printStackTrace()
-            // Tutup activity jika ada error saat setup
             finish()
         }
     }
@@ -34,6 +32,5 @@ class EditProfileActivity : ComponentActivity() {
 @Composable
 fun EditProfileScreenPreview() {
     SpareWalletTheme {
-        // Preview dengan data dummy
     }
 }

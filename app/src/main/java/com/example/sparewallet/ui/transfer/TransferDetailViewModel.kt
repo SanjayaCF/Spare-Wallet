@@ -29,11 +29,9 @@ class TransferDetailViewModel : ViewModel() {
     private val _balance = MutableStateFlow(0.0)
     val balance: StateFlow<Double> = _balance
 
-    // DITAMBAHKAN: State untuk amount dengan TextFieldValue untuk formatting
     var amount by mutableStateOf(TextFieldValue(""))
         private set
 
-    // DITAMBAHKAN: Formatter angka
     private val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
 
 
@@ -41,7 +39,6 @@ class TransferDetailViewModel : ViewModel() {
         fetchCurrentUserBalance()
     }
 
-    // DITAMBAHKAN: Fungsi untuk menangani perubahan input dan memformatnya
     fun onAmountChange(newValue: TextFieldValue) {
         if (newValue.text == amount.text) return
         val cleanString = newValue.text.replace(",", "")
@@ -57,7 +54,6 @@ class TransferDetailViewModel : ViewModel() {
                 selection = TextRange(formatted.length)
             )
         } catch (e: NumberFormatException) {
-            // Abaikan jika input tidak valid
         }
     }
 
@@ -79,7 +75,7 @@ class TransferDetailViewModel : ViewModel() {
     fun performTransfer(
         recipientAccount: String,
         recipientName: String,
-        transferAmount: Double, // amount sekarang berbentuk Double
+        transferAmount: Double,
         onResult: (success: Boolean, message: String) -> Unit
     ) {
         if (currentUserUid.isEmpty()) {

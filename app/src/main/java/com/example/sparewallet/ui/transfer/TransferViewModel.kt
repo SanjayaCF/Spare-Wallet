@@ -35,7 +35,6 @@ class TransferViewModel : ViewModel() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
             }
         })
     }
@@ -49,7 +48,6 @@ class TransferViewModel : ViewModel() {
                     val recipient = recipientSnapshot.getValue(TransferRecipient::class.java)
 
                     if (recipient != null) {
-                        // Simpan penerima yang ditemukan ke daftar 'savedRecipients' untuk masa depan
                         savedRecipientsRef.child(recipient.accountNumber).setValue(recipient)
                     }
                     onResult(recipient)

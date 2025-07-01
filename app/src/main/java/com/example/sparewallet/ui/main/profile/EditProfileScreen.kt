@@ -27,12 +27,10 @@ fun EditProfileScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Load user data when screen is first displayed
     LaunchedEffect(Unit) {
         viewModel.loadUserData()
     }
 
-    // Show loading screen during initial data load
     if (isLoading && name.isEmpty() && email.isEmpty() && phone.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),

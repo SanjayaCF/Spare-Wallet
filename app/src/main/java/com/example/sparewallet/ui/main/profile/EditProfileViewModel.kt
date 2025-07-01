@@ -54,7 +54,6 @@ class EditProfileViewModel : ViewModel() {
                     _email.value = snapshot.child("email").getValue(String::class.java) ?: currentUser.email ?: ""
                     _phone.value = snapshot.child("phone").getValue(String::class.java) ?: ""
                 } else {
-                    // Jika data user belum ada, gunakan data dari FirebaseAuth
                     _name.value = currentUser.displayName ?: ""
                     _email.value = currentUser.email ?: ""
                     _phone.value = ""
@@ -69,7 +68,7 @@ class EditProfileViewModel : ViewModel() {
 
     fun onNameChange(newName: String) {
         _name.value = newName
-        _errorMessage.value = null // Clear error when user starts typing
+        _errorMessage.value = null
     }
 
     fun onEmailChange(newEmail: String) {

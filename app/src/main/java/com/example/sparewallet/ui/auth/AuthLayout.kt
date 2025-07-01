@@ -21,17 +21,14 @@ import com.example.sparewallet.R
 
 @Composable
 fun AuthScreenLayout(
-    // Tambahkan parameter untuk judul layar agar lebih dinamis
     screenTitle: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    // Column utama yang mengisi seluruh layar
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary) // Warna dasar adalah warna primer
+            .background(MaterialTheme.colorScheme.primary)
     ) {
-        // Bagian 1: Header Biru (Tidak bisa di-scroll)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,19 +52,16 @@ fun AuthScreenLayout(
             )
         }
 
-        // Bagian 2: Konten Putih (Bisa di-scroll)
         Column(
             modifier = Modifier
-                .fillMaxSize() // Mengisi sisa ruang
+                .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(24.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Spacer untuk memberi ruang di bagian atas form
             Spacer(modifier = Modifier.height(16.dp))
-            // Menampilkan konten dari Login atau Register
             content()
         }
     }

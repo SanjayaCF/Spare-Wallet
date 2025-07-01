@@ -30,11 +30,9 @@ fun RegisterScreen(
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // State untuk mengelola Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // Scaffold membungkus layout untuk menyediakan slot bagi Snackbar
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
@@ -84,7 +82,6 @@ fun RegisterScreen(
                                     finish()
                                 }
                             } else {
-                                // Menampilkan Snackbar jika terjadi error
                                 scope.launch {
                                     snackbarHostState.showSnackbar(message ?: "An unknown error occurred")
                                 }

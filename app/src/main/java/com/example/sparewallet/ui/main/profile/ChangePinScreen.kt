@@ -34,7 +34,7 @@ private enum class ChangePinStage {
 @Composable
 fun ChangePinScreen(
     viewModel: EditProfileViewModel,
-    onPinChangedSuccessfully: () -> Unit // Callback baru untuk navigasi
+    onPinChangedSuccessfully: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()

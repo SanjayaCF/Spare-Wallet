@@ -39,7 +39,6 @@ fun PinKeypad(
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        // Padding horizontal ditambah agar keypad tidak terlalu dekat dengan tepi layar
         modifier = Modifier.padding(horizontal = 32.dp),
         userScrollEnabled = false
     ) {
@@ -49,13 +48,11 @@ fun PinKeypad(
                     if (onBiometricClick != null) {
                         TextButton(
                             onClick = { onBiometricClick() },
-                            // Rasio aspek disesuaikan untuk mengecilkan tombol
                             modifier = Modifier.aspectRatio(1.3f)
                         ) {
                             Icon(
                                 Icons.Default.Fingerprint,
                                 contentDescription = "Use Biometric",
-                                // Ukuran ikon disesuaikan
                                 modifier = Modifier.size(28.dp),
                                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -87,7 +84,6 @@ fun PinKeypad(
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     ) {
-                        // Ukuran font disesuaikan
                         Text(text = symbol, fontSize = 24.sp)
                     }
                 }

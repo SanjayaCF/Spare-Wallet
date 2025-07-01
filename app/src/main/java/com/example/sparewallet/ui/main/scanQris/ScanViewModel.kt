@@ -13,22 +13,17 @@ import androidx.lifecycle.ViewModel
 import com.budiyev.android.codescanner.*
 
 class ScanViewModel : ViewModel() {
-    // scanned text result
     var scanResult by mutableStateOf<String?>(null)
         private set
 
-    // holds the scanner instance
     lateinit var codeScanner: CodeScanner
 
-    // back or front
     var currentCameraId = CodeScanner.CAMERA_BACK
         private set
 
-    // flag to trigger permission request
     var shouldRequestPermission by mutableStateOf(false)
         private set
 
-    /** Called from ScanScreen when the view is ready */
     fun initializeScanner(
         scannerView: CodeScannerView,
         activity: ComponentActivity
@@ -48,7 +43,6 @@ class ScanViewModel : ViewModel() {
             }
         }
 
-        // check camera permission
         if (ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.CAMERA
@@ -60,22 +54,18 @@ class ScanViewModel : ViewModel() {
         }
     }
 
-    /** Called by ScanScreen after launching the permission dialog */
     fun onPermissionLaunched() {
         shouldRequestPermission = false
     }
 
-    /** Called by ScanScreen with the user's grant result */
     fun onPermissionResult(granted: Boolean) {
         if (granted) {
             codeScanner.startPreview()
         } else {
             Log.w("ScanViewModel", "Camera permission denied")
-            // optionally handle denial (show UI, disable scan, etc.)
         }
     }
 
-    /** Flip between front/back camera */
     fun switchCamera(activity: ComponentActivity) {
         try {
             val manager = activity.getSystemService(CameraManager::class.java)

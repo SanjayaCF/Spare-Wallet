@@ -41,14 +41,11 @@ fun ProfileScreen(
     var phone by remember { mutableStateOf("No Phone Number") }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Key untuk trigger refresh - berubah setiap kali kita perlu refresh data
     var refreshKey by remember { mutableStateOf(0) }
 
-    // Launcher untuk EditProfile dengan result callback
     val editProfileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        // Refresh data setelah kembali dari EditProfile
         refreshKey++
     }
 
@@ -61,7 +58,6 @@ fun ProfileScreen(
         }
     }
 
-    // Function untuk load data dari Firebase
     fun loadUserData() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val userRef = FirebaseDatabase.getInstance("https://sparewallet-55512-default-rtdb.asia-southeast1.firebasedatabase.app")
@@ -70,21 +66,18 @@ fun ProfileScreen(
 
         isLoading = true
 
-        // Load name
         userRef.child("name").get().addOnSuccessListener {
             name = it.getValue(String::class.java) ?: "User Name"
         }.addOnFailureListener {
             Toast.makeText(context, "Failed to load name", Toast.LENGTH_SHORT).show()
         }
 
-        // Load email
         userRef.child("email").get().addOnSuccessListener {
             email = it.getValue(String::class.java) ?: "No Email"
         }.addOnFailureListener {
             Toast.makeText(context, "Failed to load email", Toast.LENGTH_SHORT).show()
         }
 
-        // Load phone
         userRef.child("phone").get().addOnSuccessListener {
             phone = it.getValue(String::class.java) ?: "No Phone Number"
             isLoading = false
@@ -94,14 +87,11 @@ fun ProfileScreen(
         }
     }
 
-    // Load data saat pertama kali dan setiap refreshKey berubah
     LaunchedEffect(refreshKey) {
-        // Load profile image dari local storage
         loadUserProfileLocal(sharedPreferences)?.let {
             imageUri = Uri.parse(it)
         }
 
-        // Load data dari Firebase
         loadUserData()
     }
 
@@ -111,7 +101,6 @@ fun ProfileScreen(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Profile Image
         Image(
             painter = rememberAsyncImagePainter(model = imageUri ?: R.drawable.ic_user),
             contentDescription = "Profile Picture",
@@ -124,7 +113,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // User Info dengan loading state
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.height(16.dp))
@@ -136,7 +124,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Edit Profile Button
         Button(
             onClick = {
                 val intent = Intent(context, EditProfileActivity::class.java)
@@ -149,7 +136,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Edit PIN Button
         Button(
             onClick = {
                 context.startActivity(Intent(context, ChangePinActivity::class.java))
@@ -161,7 +147,6 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Log Out Button
         Button(
             onClick = {
                 FirebaseAuth.getInstance().signOut()
