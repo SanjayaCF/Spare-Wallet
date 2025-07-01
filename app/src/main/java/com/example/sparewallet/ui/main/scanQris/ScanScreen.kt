@@ -12,7 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,24 +31,25 @@ fun ScanScreen(
     scanViewModel: ScanViewModel = viewModel()
 ) {
     val context = LocalContext.current as ComponentActivity
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { granted -> if (granted) scanViewModel.codeScanner.startPreview() }
-    )
 
+    // Box to layer scanner preview and overlays
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
+        // 1) permission launcher in UI
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            scanViewModel.onPermissionResult(granted)
+        }
+
+        // 2) initialize scanner view once
         AndroidView(
             factory = { ctx ->
-                CodeScannerView(ctx).apply {
-                    scanViewModel.initializeScanner(
-                        this,
-                        context,
-                        permissionLauncher
-                    )
+                CodeScannerView(ctx).also { scannerView ->
+                    scanViewModel.initializeScanner(scannerView, context)
                 }
             },
             modifier = Modifier
@@ -57,6 +57,15 @@ fun ScanScreen(
                 .clickable { scanViewModel.codeScanner.startPreview() }
         )
 
+        // 3) trigger permission request when VM asks
+        if (scanViewModel.shouldRequestPermission) {
+            LaunchedEffect(Unit) {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+                scanViewModel.onPermissionLaunched()
+            }
+        }
+
+        // overlay scanned result
         scanViewModel.scanResult?.let { result ->
             Box(
                 modifier = Modifier
@@ -73,6 +82,7 @@ fun ScanScreen(
             }
         }
 
+        // camera switch button
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -89,20 +99,13 @@ fun ScanScreen(
             )
         }
 
+        // gallery picker launcher
         val galleryLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@rememberLauncherForActivityResult
-                val bitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                    val source = android.graphics.ImageDecoder.createSource(
-                        context.contentResolver, uri
-                    )
-                    android.graphics.ImageDecoder.decodeBitmap(source)
-                } else {
-                    @Suppress("DEPRECATION")
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-                }
+                // handle image picking here
             }
         }
         Box(

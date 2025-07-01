@@ -54,7 +54,6 @@ fun SetupPinScreen() {
     var newPin by remember { mutableStateOf("") }
     var confirmPin by remember { mutableStateOf("") }
     var isConfirming by remember { mutableStateOf(false) }
-
     val gradientColors = listOf(Color(0xFF2196F3), Color(0xFF64B5F6))
 
     Scaffold(
@@ -82,7 +81,6 @@ fun SetupPinScreen() {
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         if (!confirming) {
-                            // Stage 1: Enter New PIN
                             EnterPinStage(
                                 title = "Create a New PIN",
                                 pin = newPin,
@@ -90,7 +88,6 @@ fun SetupPinScreen() {
                                 onPinComplete = { isConfirming = true }
                             )
                         } else {
-                            // Stage 2: Confirm PIN
                             EnterPinStage(
                                 title = "Confirm Your PIN",
                                 pin = confirmPin,
@@ -98,7 +95,8 @@ fun SetupPinScreen() {
                                 onPinComplete = {
                                     scope.launch {
                                         if (newPin == confirmPin) {
-                                            val sharedPref = context.getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
+                                            val sharedPref = context
+                                                .getSharedPreferences("SpareWalletPrefs", Context.MODE_PRIVATE)
                                             sharedPref.edit().putString("user_pin", newPin).apply()
                                             snackbarHostState.showSnackbar("PIN set successfully!")
                                             context.startActivity(Intent(context, MainActivity::class.java))
