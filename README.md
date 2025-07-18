@@ -4,6 +4,17 @@ Spare-Wallet is an Android application designed to simulate a real-world E-Walle
 
 -----
 
+## Showcase
+
+
+**Key Features Screenshots**
+*(Screenshots of the most important screens in the app)*
+| Login Screen | Home Screen | Transfer Screen |
+| :---: | :---: | :---: |
+|  |  |  |
+
+-----
+
 ## Key Features
 
   - **Secure User Authentication**: Employs Firebase Authentication for robust and secure user login and registration processes. New users can easily create an account, while existing users can log in with their credentials.
@@ -16,7 +27,7 @@ Spare-Wallet is an Android application designed to simulate a real-world E-Walle
 
 -----
 
-## Technical Stack
+## 🛠Technical Stack
 
   - **Kotlin**: The primary programming language for the application.
   - **Jetpack Compose**: Used for building the entire user interface, providing a modern and declarative approach to UI development.
@@ -42,7 +53,7 @@ To get a local copy up and running, follow these simple steps.
 
 1.  Clone the repository:
     ```sh
-    git clone https://github.com/your_username/spare-wallet.git
+    git clone https://github.com/SanjayaCF/spare-wallet.git
     ```
 2.  Open the project in Android Studio.
 3.  Set up a Firebase project and add the `google-services.json` file to the `app` directory.
@@ -54,10 +65,10 @@ To get a local copy up and running, follow these simple steps.
 
 The project is organized into several packages, each responsible for a specific feature:
 
-  - **`auth`**: Contains all activities and composables related to user authentication, including login, registration, PIN setup, and PIN lock screens.
-  - **`common`**: Includes common or shared components, such as the splash screen and a "coming soon" activity.
-  - **`history`**: Manages the display of the user's transaction history.
-  - **`main`**: Contains the main activity and the different screens accessible from the bottom navigation bar (Home, Scan QRIS, and Profile).
-  - **`model`**: Defines the data models used throughout the application, such as `TransactionRecord` and `TransferRecipient`.
-  - **`theme`**: Defines the app's theme, including colors and typography, following Material Design 3 principles.
-  - **`transfer`**: Handles the logic and UI for transferring funds between users.
+  - **`auth`**: Contains all activities and composables related to user authentication.
+  - **`common`**: Includes shared components like the splash screen.
+  - **`history`**: Manages the display of the transaction history.
+  - **`main`**: Contains the main activity and the different screens accessible from the bottom navigation bar.
+  - **`model`**: Defines the data models used throughout the application.
+  - **`theme`**: Defines the app's theme, including colors and typography.
+  - **`transfer`**: Handles the logic and UI for transferring funds.
