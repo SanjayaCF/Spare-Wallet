@@ -10,7 +10,7 @@ Spare-Wallet is an Android application designed to simulate a real-world E-Walle
 **Key Features Screenshots**
 | Login Screen | Register Screen | Enter Pin Screen | Home Screen | Transfer Screen | History Screen |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-|![Login Screen](ScreenImage/login.jpg)|  |  |  |  |
+|![Login Screen](ScreenImage/login.jpg)|![Register Screen](ScreenImage/register.jpg)|![Enter Pin Screen](ScreenImage/pin.jpg)|![Home Screen](ScreenImage/homescreen.jpg)|![History Screen](ScreenImage/history.jpg)|
 
 -----
 
